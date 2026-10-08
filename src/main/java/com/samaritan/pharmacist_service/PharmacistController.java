@@ -50,4 +50,13 @@ public class PharmacistController {
 			}
 			return ResponseEntity.ok(customerRepository.findByStoreId(storeId));
 		}
+		
+		// Get notifications of medications and their customers at a given store where the arrival date is in the past
+		@GetMapping("/stores/{storeId}/notifications")
+		public ResponseEntity<List<StoreRepository.NotificationView>> notificaitons(@PathVariable Long storeId) {
+			if (!storeRepository.existsById(storeId)) {
+				return ResponseEntity.notFound().build();
+			}
+			return ResponseEntity.ok(storeRepository.findNotificationsByStoreId(storeId));
+		}
 }

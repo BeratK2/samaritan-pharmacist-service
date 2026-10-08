@@ -22,6 +22,15 @@
 - Add date of arrival to customer-medication table
 - Add view customer medications list to pharmacist service
 
+10-04 
+- Alerts for arrived medication
+
+10-08
+- Host db on GCP
+
+10-09 
+- Replace application.properties
+
 Questions:
 - Should I use req params or req body for a POST request
 - Should I call the medication database directly from here or from the medication service?
