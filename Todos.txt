@@ -22,6 +22,7 @@
 - Add date of arrival to customer-medication table
 - Add view customer medications list to pharmacist service
 
+<<<<<<< HEAD
 10-01
 - Pharmacist notification when medication arrives.
 
@@ -34,6 +35,16 @@
 
 10-04
 - View prescribed medication store
+=======
+10-04 
+- Alerts for arrived medication
+
+10-08
+- Host db on GCP
+
+10-09 
+- Replace application.properties
+>>>>>>> 3a1e07ffa4070e2d98bf6d3009c91285f7c9e151
 
 Questions:
 - Should I use req params or req body for a POST request

@@ -57,6 +57,7 @@ public class PharmacistController {
 			return ResponseEntity.ok(customerRepository.findByStoreId(storeId));
 		}
 		
+<<<<<<< HEAD
 		// Get a single customer's details and medications
 		public record CustomerMedication(long medication_id, String medication_name,
 				String medication_description, LocalDateTime arrival_date) {}
@@ -88,4 +89,14 @@ public class PharmacistController {
 
 				return ResponseEntity.ok(new CustomerDetails(customer.get(), medications));
 				}
+=======
+		// Get notifications of medications and their customers at a given store where the arrival date is in the past
+		@GetMapping("/stores/{storeId}/notifications")
+		public ResponseEntity<List<StoreRepository.NotificationView>> notificaitons(@PathVariable Long storeId) {
+			if (!storeRepository.existsById(storeId)) {
+				return ResponseEntity.notFound().build();
+			}
+			return ResponseEntity.ok(storeRepository.findNotificationsByStoreId(storeId));
+		}
+>>>>>>> 3a1e07ffa4070e2d98bf6d3009c91285f7c9e151
 }
