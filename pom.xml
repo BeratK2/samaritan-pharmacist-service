@@ -27,7 +27,7 @@
 		<url/>
 	</scm>
 	<properties>
-		<java.version>26</java.version>
+		<java.version>25</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -70,6 +70,18 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<image>
+						<name>beratk2/pharmacist-service:latest</name>
+						<imagePlatform>linux/amd64</imagePlatform>
+					</image>
+					<docker>
+			            <builderRegistry> <!-- OR <publishRegistry> -->
+			                <username>${env.DOCKER_REGISTRY_USER}</username> <!-- This property is missing or null -->
+			                <password>${env.DOCKER_REGISTRY_PASSWORD}</password>
+			            </builderRegistry>
+	        		</docker>
+        		</configuration>
 			</plugin>
 		</plugins>
 	</build>
