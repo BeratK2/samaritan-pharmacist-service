@@ -1,13 +1,16 @@
 package com.samaritan.pharmacist_service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.samaritan.pharmacist_service.PharmacistController.CustomerMedication;
 import com.samaritan.pharmacist_service.Entities.Customer;
 import com.samaritan.pharmacist_service.Entities.Medication;
 import com.samaritan.pharmacist_service.Repositories.CustomerRepository;
@@ -19,13 +22,16 @@ public class PharmacistController {
 		private final MedicationRepository medicationRepository;
 		private final CustomerRepository customerRepository;
 		private final StoreRepository storeRepository;
-		
+		private final JdbcTemplate jdbcTemplate;
+
 		public PharmacistController(MedicationRepository medicationRepository, 
 									CustomerRepository customerRepository, 
-									StoreRepository storeRepository) {
+									StoreRepository storeRepository,
+									JdbcTemplate jdbcTemplate) {
 			this.medicationRepository = medicationRepository;
 			this.customerRepository = customerRepository;
 			this.storeRepository = storeRepository;
+			this.jdbcTemplate = jdbcTemplate;
 		}
 		
 		// View all medications
@@ -50,4 +56,36 @@ public class PharmacistController {
 			}
 			return ResponseEntity.ok(customerRepository.findByStoreId(storeId));
 		}
+		
+		// Get a single customer's details and medications
+		public record CustomerMedication(long medication_id, String medication_name,
+				String medication_description, LocalDateTime arrival_date) {}
+
+		public record CustomerDetails(Customer customer, List<CustomerMedication> medications) {}
+
+		@GetMapping("/customers/{customerId}")
+		public ResponseEntity<CustomerDetails> customerDetails(@PathVariable Long customerId) {
+				Optional<Customer> customer = customerRepository.findById(customerId);
+				if (customer.isEmpty()) {
+						return ResponseEntity.notFound().build();
+				}
+
+				List<CustomerMedication> medications = jdbcTemplate.query("""
+						SELECT m.medication_id, m.medication_name, m.medication_description, cm.arrival_date
+						FROM customer_medication cm
+						JOIN medication.medication m ON m.medication_id = cm.medication_id
+						WHERE cm.customer_id = ?
+						ORDER BY m.medication_name
+						""",
+						(rs, rowNum) -> new CustomerMedication(
+								rs.getLong("medication_id"),
+								rs.getString("medication_name"),
+								rs.getString("medication_description"),
+								rs.getTimestamp("arrival_date") == null
+										? null
+										: rs.getTimestamp("arrival_date").toLocalDateTime()),
+						customerId);
+
+				return ResponseEntity.ok(new CustomerDetails(customer.get(), medications));
+				}
 }

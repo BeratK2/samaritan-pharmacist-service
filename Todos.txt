@@ -22,6 +22,19 @@
 - Add date of arrival to customer-medication table
 - Add view customer medications list to pharmacist service
 
+10-01
+- Pharmacist notification when medication arrives.
+
+10-02 
+- Dispense medication
+
+10-03
+- Customer view all medications
+- View prescribed medication details
+
+10-04
+- View prescribed medication store
+
 Questions:
 - Should I use req params or req body for a POST request
 - Should I call the medication database directly from here or from the medication service?
